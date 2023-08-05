@@ -1,6 +1,6 @@
 import { Customer } from "./customer.model.js";
 import Joi from "joi";
-import mongoose from "mongoose";
+import { checkMongoId } from "../utils/utils.js";
 
 export const createCustomer = async (req, res) => {
   try {
@@ -32,4 +32,15 @@ export const validateEntries = async (req, res, next) => {
   } catch (error) {
     return res.status(400).send({ message: error.message });
   }
+};
+export const deleteCustomer = async (req, res) => {
+  const customerId = req.params.id;
+  const isValidId = checkMongoId(customerId);
+  if (!isValidId) {
+    return res.status(400).send("send valid Id ");
+  }
+  await Customer.deleteOne({
+    _id: customerId,
+  });
+  return res.status(200).send("Deleted Sucessfully");
 };
